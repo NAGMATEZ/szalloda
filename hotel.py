@@ -122,6 +122,11 @@ def foglalaslistazas(foglalasok):
 
 
 class Menuinterfesz:
+
+    @abstractmethod
+    def szallodavalasztas(self):
+        #választunk a rendelkezésre álló szállodákból egyet a program fennmaradó részére
+        pass
     @abstractmethod
     def opciok(self):
          #Megjeleníti a menü opcióit
@@ -132,32 +137,42 @@ class Menuinterfesz:
         pass
 class Menu:
 
+    def szallodavalasztas(self, szallodalista):
+        print("Válassz szállodát az alábbiak közül: ")
+        index=0
+        for szallo in szallodak:
+            print(str(index) + ". szálloda " + szallo.nev)
+        return int(input("A választásod: "))
+
     def opciok(self):
         print("\nÜdvözöljük a " + TesztSzallo.nev + " szállodában!\nKészüléke nyomógombjai segítségével kérem válasszon az alábbi menüpontok közül: ")
         print("Foglalás kezdeményezése      - 1-es gomb")
         print("Meglévő foglalás lemondása   - 2-es gomb")
         print("Meglévő foglalás lemondása   - 2-es gomb")
         print("Az összes foglalás listázása - 3-as gomb")
+        print("Kilépés a programból         - 0-ás gomb")
 
     def getAnswer(self):
         while True:
             try:
                 valasz=int(input("\n Kérem írja be választását! (1,2,3): "))
-                if 1<=valasz<=3:
+                if 0<=valasz<=3:
                     return valasz
                 else: print("Helytelen sorszám, kérem a fenti opciók megfelelő számát beütni")
             except ValueError:
                 print("A bevitel formátuma nem megfelelő!! Kérem számmal válasszon a menüből")
 
 M = Menu()
-TesztSzallo = Szalloda(nev="Tesztellek")
+szallodak=[]
+TesztSzallo = Szalloda(nev="TesztSzallo")
+szallodak.append(TesztSzallo)
 
 TesztSzallo.szobahozzaadas(EgyAgyasSzoba(12000, 11))
 
 TesztSzallo.szobahozzaadas(EgyAgyasSzoba(15000, 12))
 
 TesztSzallo.szobahozzaadas(KetAgyasSzoba(20000, 21))
-
+hanyadik = M.szallodavalasztas(szallodak)
 foglalasok = [
 Foglalas(TesztSzallo,2024, 12, 24, 2, 21, "Nagy Máté"),
 Foglalas(TesztSzallo,2026, 1, 20, 1, 11, "Kelemen Ármin"),
@@ -169,7 +184,6 @@ Foglalas(TesztSzallo,2030, 7, 15, 2, 21, "Nagy Johanna")
 
 while True:
     Menu.opciok(M)
-
     val = Menu.getAnswer(M)
 
     if val == 1:
@@ -178,5 +192,7 @@ while True:
         lemondas()
     elif val == 3:
         foglalaslistazas(foglalasok)
+    elif val == 0:
+        break
     else: 
         print("Ismeretlen hiba")
