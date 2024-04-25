@@ -1,5 +1,5 @@
 from abc import ABC,abstractmethod
-
+from datetime import date
 
 class Szoba(ABC):
 
@@ -34,11 +34,9 @@ class Szalloda:
 
 
 class Foglalas:
-    def __init__(self,szalloda:Szalloda, ev: int, honap: int, nap: int, agyszam: int, szobaszam: int, ugyfelnev: str):
+    def __init__(self,szalloda:Szalloda, datum: date, agyszam: int, szobaszam: int, ugyfelnev: str):
         self.szalloda=szalloda
-        self.ev = ev
-        self.honap = honap
-        self.nap = nap
+        self.datum = datum
         self.agyszam = agyszam
         self.szobaszam = szobaszam
         self.ugyfelnev = ugyfelnev
@@ -46,30 +44,24 @@ class Foglalas:
 
 def foglal(szalloda):
     agyszam = int(input("Hány ágyas szobát szeretne? (1 vagy 2): "))
-    print("Kérem a dátumokat ne kezdje 0-val ; pl:01 -> 1")
+    
     while True:
         ev = int(input("Kérem adja meg a foglalás évét: "))
-        if ev <= 2024:
+        if ev >= 2024:
             break
+    
     while True:
         honap = int(input("Kérem adja meg a foglalás hónapját: "))
         if 1 <= honap <= 12:
             break
+    
     while True:
         nap = int(input("Kérem adja meg a foglalás napját: "))
-        if honap == 1 or honap == 3 or honap == 5 or honap == 7 or honap == 8 or honap == 10 or honap == 12:
-            if 1 <= nap <= 31:
-                break
-        elif honap == 4 or honap == 6 or honap == 9 or honap == 11:
-            if 1 <= nap <= 30:
-                break
-        else:
-            if ev-2024 % 4 == 0:
-                if 1 <= nap <= 29:
-                    break
-            else:
-                if 1 <= nap <= 28:
-                    break
+        if 1 <= nap <= 31:
+            break
+    
+    datum = date(ev, honap, nap)
+    
     while True:
         ugyfelnev = input("Milyen névre lesz a foglalás?: ")
         if ugyfelnev != "":
@@ -80,7 +72,7 @@ def foglal(szalloda):
             if isinstance(szoba, EgyAgyasSzoba) and not szoba.foglalt:
                 szobaszam = szoba.szobaszam
                 szoba.foglalt = True
-                foglalasok.append(Foglalas(szalloda, ev, honap, nap, 1, szobaszam, ugyfelnev))
+                foglalasok.append(Foglalas(szalloda, datum, 1, szobaszam, ugyfelnev))
                 print("Köszönjük foglalását!\n")
                 return szoba.ar
     elif agyszam == 2:
@@ -88,7 +80,7 @@ def foglal(szalloda):
             if isinstance(szoba, KetAgyasSzoba) and not szoba.foglalt:
                 szobaszam = szoba.szobaszam
                 szoba.foglalt = True
-                foglalasok.append(Foglalas(szalloda,ev, honap, nap, 2, szobaszam, ugyfelnev))
+                foglalasok.append(Foglalas(szalloda, datum, 2, szobaszam, ugyfelnev))
                 print("Köszönjük foglalását!\n")
                 return szoba.ar
     else:
@@ -174,11 +166,11 @@ TesztSzallo.szobahozzaadas(EgyAgyasSzoba(15000, 12))
 TesztSzallo.szobahozzaadas(KetAgyasSzoba(20000, 21))
 hanyadik = M.szallodavalasztas(szallodak)
 foglalasok = [
-Foglalas(TesztSzallo,2024, 12, 24, 2, 21, "Nagy Máté"),
-Foglalas(TesztSzallo,2026, 1, 20, 1, 11, "Kelemen Ármin"),
-Foglalas(TesztSzallo,2024, 6, 6, 1, 12, "Szilágyi Judit"),
-Foglalas(TesztSzallo,2028, 2, 26, 1, 11, "Kocsis Szilárd"),
-Foglalas(TesztSzallo,2030, 7, 15, 2, 21, "Nagy Johanna")
+Foglalas(TesztSzallo,date(2024, 12, 24), 2, 21, "Nagy Máté"),
+Foglalas(TesztSzallo,date(2026, 1, 20), 1, 11, "Kelemen Ármin"),
+Foglalas(TesztSzallo,date(2024, 6, 6), 1, 12, "Szilágyi Judit"),
+Foglalas(TesztSzallo,date(2028, 2, 26), 1, 11, "Kocsis Szilárd"),
+Foglalas(TesztSzallo,date(2030, 7, 15), 2, 21, "Nagy Johanna")
 ]
 
 
