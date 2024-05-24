@@ -96,9 +96,9 @@ def lemondas():
     nap = int(input("Kérem adja meg a lemondani kívánt foglalás napját: "))
     szobaszam = int(input("Kérem adja meg a lemondani kívánt foglaláshoz kapcsolt szobaszámot: "))
     agyszam = int(input("Hány ágyas szobára foglalt?: "))
-
+    datum = date(ev, honap, nap)
     for foglalas in foglalasok:
-        if (foglalas.ev == ev and foglalas.honap == honap and foglalas.nap == nap and foglalas.agyszam == agyszam and
+        if (foglalas.datum==datum and foglalas.agyszam == agyszam and
                 foglalas.szobaszam == szobaszam and foglalas.ugyfelnev == ugyfelnev):
              del(foglalas)
              print("A lemondás sikeres volt! Reméljük, legközelebb találkozunk")
@@ -110,7 +110,7 @@ def lemondas():
 def foglalaslistazas(foglalasok):
     print("Az összes foglalás: \n")
     for foglalas in foglalasok:
-        print("Dátum: " + str(foglalas.ev) + ". " + str(foglalas.honap) + ". " + str(foglalas.nap) + "; Név: " + str(foglalas.ugyfelnev) + " ; Szobaszám: " + str(foglalas.szobaszam) + " ; Ágyak száma a szobában: " + str(foglalas.agyszam) + "\n")
+        print("Dátum: " + str(foglalas.datum) +"; Név: " + str(foglalas.ugyfelnev) + " ; Szobaszám: " + str(foglalas.szobaszam) + " ; Ágyak száma a szobában: " + str(foglalas.agyszam) + "\n")
 
 
 class Menuinterfesz:
@@ -134,12 +134,17 @@ class Menu:
         index=0
         for szallo in szallodak:
             print(str(index) + ". szálloda " + szallo.nev)
-        return int(input("A választásod: "))
+        h=int(input("Kérem válasszon a fenti szállodák közül: "))
+        while h>=len(szallodak):
+            try:
+                h=int(input("Kérem válasszon a fenti szállodák közül: "))
+            except ValueError:
+                print("A bevitel formátuma nem megfelelő!! Kérem számmal válasszon a menüből")
+        return h
 
     def opciok(self):
-        print("\nÜdvözöljük a " + TesztSzallo.nev + " szállodában!\nKészüléke nyomógombjai segítségével kérem válasszon az alábbi menüpontok közül: ")
+        print("\nÜdvözöljük a " + szallodak[hanyadik].nev + " szállodában!\nKészüléke nyomógombjai segítségével kérem válasszon az alábbi menüpontok közül: ")
         print("Foglalás kezdeményezése      - 1-es gomb")
-        print("Meglévő foglalás lemondása   - 2-es gomb")
         print("Meglévő foglalás lemondása   - 2-es gomb")
         print("Az összes foglalás listázása - 3-as gomb")
         print("Kilépés a programból         - 0-ás gomb")
@@ -164,7 +169,13 @@ TesztSzallo.szobahozzaadas(EgyAgyasSzoba(12000, 11))
 TesztSzallo.szobahozzaadas(EgyAgyasSzoba(15000, 12))
 
 TesztSzallo.szobahozzaadas(KetAgyasSzoba(20000, 21))
-hanyadik = M.szallodavalasztas(szallodak)
+while True:
+    try:
+        hanyadik = int(M.szallodavalasztas(szallodak))
+
+        break
+    except IndexError:
+        print("Nincs ilyen indexű szálloda, kérem válasszon a felsoroltak közül!")
 foglalasok = [
 Foglalas(TesztSzallo,date(2024, 12, 24), 2, 21, "Nagy Máté"),
 Foglalas(TesztSzallo,date(2026, 1, 20), 1, 11, "Kelemen Ármin"),
